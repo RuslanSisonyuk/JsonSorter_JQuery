@@ -1,7 +1,14 @@
 let json_filename = "data.json";
 
-function assignDataToCard(data){
-
+function createCard(area){
+    let card = document.createElement('div');
+    let card_span = document.createElement('span');
+    card.classList.add('list-element');
+    card_span.classList.add('list-elem-content');
+    card_span.setAttribute("data-after", area.defaultSku);
+    card_span.innerHTML=area.sku;
+    card.appendChild(card_span);
+    return card;
 }
 
 $('.btn').on("click",function(event){
@@ -34,8 +41,40 @@ $('.btn').on("click",function(event){
                 let group_row = document.createElement('div');
 
                 $.each(areas[key], function(i,area){
-                    console.log(area);
-                    group_row.append(area.sku);
+                    // group_row.append(area.sku);
+
+                    //for every entry that has joinedWith as null, add it to the group and add all of the elements that follow it as well
+                    if(area.joinedWith==null){
+                        let card = createCard(area); //create the first element in the Chain
+                        group_row.appendChild(card);
+
+                        let chain_status_counter=0; // 0 - every entry has status of 'open', 0< - at least one is 'closed', 
+                        let amount_of_entries=0;    //  == Number of entries in chain - all are closed 
+                        let previous_card = card;
+
+                        if(area.status=='closed') chain_status_counter++;
+                        $.each(areas[key], function(i,next_area){
+                            if(next_area.joinedWith == area.id){
+                                let new_card = createCard(next_area);
+                                group_row.appendChild(new_card);
+
+                                previous_card.classList.add('isConected');
+                                previous_card=new_card;                         //apply the connection styling to the previous card
+
+                                //console.log(next_area.id+" is with "+area.id);
+                                if(next_area.status=='closed') chain_status_counter++; //count the entries that are closed
+                                amount_of_entries++;
+                            }
+                        });
+
+
+                        if(chain_status_counter==amount_of_entries+1)
+                            card.classList.add('indicator-closed');
+                        else if(chain_status_counter>0)
+                            card.classList.add('indicator-warn');
+                        else
+                            card.classList.add('indicator-open');
+                    }
                 });
 
                 //add clases and innerhtml to the title and group row
