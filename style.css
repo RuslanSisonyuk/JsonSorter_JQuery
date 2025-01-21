@@ -1,7 +1,7 @@
 *{
     box-sizing: border-box;
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #fff;
 }
@@ -48,10 +48,12 @@ section{
 
 .list-row{
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     width: 100%;
-    row-gap: 1rem;
-    column-gap: 1rem;
+    height: auto;
+    row-gap: 0.7rem;
+    column-gap: 0.5rem;
 }
 
 .list-element{
@@ -124,7 +126,7 @@ section{
 
 .list-elem-content::before{
     font-size: 0.8rem;
-    content: "1";
+    content: attr(data-after);
 
     position: absolute;
     display: flex;
